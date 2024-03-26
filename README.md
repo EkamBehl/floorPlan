@@ -66,7 +66,7 @@ source venv/bin/activate
 <h2>2. Install Dependencies:</h2>
 With the environment running install the following dependencies required for the project.
 <ul>
-<h4>1. Fast Api</h4>
+<h4>2.1. Fast Api</h4>
 <ul><li>
   <p>FastAPI is a modern web framework for building APIs with Python. Install it using pip:</p>
 
@@ -76,7 +76,7 @@ pip install fastapi
 ```
 </li>
 </ul>
-<h4>2. Uvicorn</h4>
+<h4>2.2. Uvicorn</h4>
 <ul><li>
 <p>Uvicorn is a lightning-fast ASGI server. Install it using pip:</p>
 
@@ -87,7 +87,7 @@ pip install uvicorn
 </li>
 </ul>
 
-<h4>3. Python Multipart</h4>
+<h4>2.3. Python Multipart</h4>
 <ul><li>
 <p>python-multipart is a streaming multipart parser for Python. Install it using pip:</p>
 
@@ -97,7 +97,7 @@ pip install python-multipart
 ```
 </li>
 </ul>
-<h4>Install Ultralytics</h4>
+<h4>2.4. Install Ultralytics</h4>
 <ul><li>
 <p>Ultralytics is a package for object detection, instance segmentation, and pose estimation. Install it using pip:</p>
 
@@ -119,5 +119,29 @@ uvicorn main:app --reload
   <li>main: the file name (without the .py extension) where your app is defined.</li>
   <li>app: the variable name assigned to the FastAPI() instance.</li>
   <li>--reload: makes the server restart after code changes. This is very useful during development but should be omitted in production.</li>
+  
+</ul>
+<h2>4. Access the App </h2>
+With Uvicorn running, open a web browser and use the following to open the app:  
+
+```
+http://127.0.0.1:8000/
+```
+
+<ul>
+  <li>You should see the response from your FastAPI app, such as {"Hello": "World"} in this example.</li>
+  <li>To Test the api: 
+    <ul><li> Go to the following to access swagger: 
+
+    http://127.0.0.1:8000/docs
+
+  </li>
+  <li> Click on dropdown Menu at the right side of POST. </li>
+  <li> Click choose a file and select an image to try out the model on. </li>
+  <li> Click excecute and check the response down below. </li>
+    
+  </ul>
+  </li>
+ 
   
 </ul>
