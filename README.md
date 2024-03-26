@@ -111,3 +111,13 @@ pip install ultralytics
 
 <h2>3. Run the uvicorn server </h2>
 Navigate to the directory containing your main.py file and run the following command in the terminal:
+
+```
+uvicorn main:app --reload
+```
+<ul>
+  <li>main: the file name (without the .py extension) where your app is defined.</li>
+  <li>app: the variable name assigned to the FastAPI() instance.</li>
+  <li>--reload: makes the server restart after code changes. This is very useful during development but should be omitted in production.</li>
+  
+</ul>
