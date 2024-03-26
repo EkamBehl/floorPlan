@@ -64,7 +64,7 @@ source venv/bin/activate
 
 
 <h2>2. Install Dependencies:</h2>
-Following are the Dependencies required for the project.
+With the environment running install the following dependencies required for the project.
 <ul>
 <h4>1. Fast Api</h4>
 <ul><li>
