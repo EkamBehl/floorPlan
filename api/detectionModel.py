@@ -6,11 +6,11 @@ import numpy as np
 
 async def getBoundingBox(image: np.ndarray) -> list[dict]:
     # Load a pretrained YOLOv8 model
-    model = YOLO('./last.pt')
+    model = YOLO('./best.pt')
     device = "cpu"
     
     # Run inference on the image
-    results = model.predict(image, conf=0.4, device=device)
+    results = model.predict(image, conf=0.01, device=device)
     
     jsonArray = []
     boxes = results[0].cpu().numpy().boxes
@@ -25,7 +25,7 @@ async def getBoundingBox(image: np.ndarray) -> list[dict]:
         
         jsonArray.append(jsonObject)
     
-    print("jsonArray: ", jsonArray)
+    
     return jsonArray
 def box_to_dict(box):
     # Convert a single Box object to a dictionary
