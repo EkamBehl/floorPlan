@@ -4,11 +4,19 @@ import numpy as np
 import cv2
 
 from detectionModel import getBoundingBox , box_to_dict
-
-
-
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+origins=[
+    "http://localhost:3000"
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # Allows the origins listed in origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
 
 @app.get("/")
 def read_root():
