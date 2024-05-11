@@ -79,7 +79,7 @@ def read_root():
     return {"Hello": "World"}
 
 
-
+    
 @app.post("/detect/")
 async def detect(image_data:ImageData):
     imageUrl = image_data.imageString
