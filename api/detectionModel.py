@@ -1,4 +1,5 @@
 
+
 from ultralytics import YOLO
 
 import numpy as np
@@ -43,6 +44,43 @@ def find_most_isolated_corner_and_opposite(bbox, mask_coords):
 
     # Return the next corner and the opposite corner to the next corner
     return [bbox_corners[next_corner_index], bbox_corners[opposite_of_next_index]]
+def filter_and_adjust_coordinates_by_distance(coords, min_distance,min_dist_for_coords):
+    """
+    Filter coordinates to ensure each is at least min_distance from the previous,
+    and adjust x or y values if they are within min_distance to make them equal.
+
+    Parameters:
+    - coords (list of [x, y]): List of [x, y] coordinates.
+    - min_distance (float): Minimum distance required between consecutive points.
+
+    Returns:
+    - list of [x, y]: Filtered and adjusted coordinates.
+    """
+    if not coords:
+        return []
+
+    # Initialize the list of filtered coordinates with the first coordinate
+    filtered_coords = [coords[0]]
+    # Start with the first coordinate
+    last_coord = np.array(coords[0])
+
+    for current in coords[1:]:
+        current_coord = np.array(current)
+        # Calculate the Euclidean distance from the last accepted coordinate
+        distance = np.linalg.norm(current_coord - last_coord)
+        
+        if distance >= min_distance:
+            # Before appending, adjust current_coord x or y if close enough to last_coord x or y
+            if abs(last_coord[0] - current_coord[0]) < min_dist_for_coords:
+                current_coord[0] = last_coord[0]
+            if abs(last_coord[1] - current_coord[1]) < min_dist_for_coords:
+                current_coord[1] = last_coord[1]
+            
+            filtered_coords.append(current_coord.tolist())
+            last_coord = current_coord  # Update the last_coord to the adjusted current_coord
+
+    return filtered_coords
+
 
 def find_closest_wall_coord(corner, wall_coords):
     if not wall_coords:
@@ -80,19 +118,21 @@ def find_closest_wall_coord(corner, wall_coords):
 def ChangeName(name):
     if(name=='wwaall'):
         name='wall'
-    elif(name=='door'):
-        name='door'
-    else:
-        name='wall'
     return name
 async def getBoundingBox(image: np.ndarray) -> list[dict]:
     # Load a pretrained YOLOv8 model
     model = YOLO('./best2.pt')
     device = "cpu"
     
+    model2=YOLO('./windows.pt')
     # Run inference on the image
     results = model.predict(image, conf=0.1, device=device)
-    
+    results2=model2.predict(image,conf=0.1,device=device)
+
+  
+    windows_boxes = results2[0].cpu().numpy().boxes
+    windows_names = results2[0].cpu().numpy().names
+    windows_masks = results2[0].masks
     wall_objects = []
     wall_coords=[]
     boxes = results[0].cpu().numpy().boxes
@@ -107,16 +147,18 @@ async def getBoundingBox(image: np.ndarray) -> list[dict]:
                 coords = coords.tolist()
        
                 wall_coords.append(coords)
+                coords=filter_and_adjust_coordinates_by_distance(coords,4,0.5)
                 wall_objects.append({
                     'class': class_name,
                     'coords': coords
                 })
-    for i in range(len(boxes.cls)):
-        class_name = ChangeName(names[int(boxes.cls[i])])
-        coords = masks[i].xy[0]
+    
+    for i in range(len(windows_boxes.cls)):
+        class_name = ChangeName(windows_names[int(windows_boxes.cls[i])])
+        coords = windows_masks[i].xy[0]
         if(class_name=="door"):
         # Ensure door coordinates are processed by getDoorPts and converted to list format
-            bboxcorners=boxes.xyxy[i].tolist()
+            bboxcorners=windows_boxes.xyxy[i].tolist()
 
             door_coords = find_most_isolated_corner_and_opposite(bboxcorners,coords)
             door_coords = [coord.tolist() if isinstance(coord, np.ndarray) else coord for coord in door_coords]
@@ -129,21 +171,44 @@ async def getBoundingBox(image: np.ndarray) -> list[dict]:
             wall_objects.append({
                 'class': class_name,
                 'coords': doorCoords
+        })
+        elif(class_name=="window"):
+            print("YESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
+            bboxcorners=windows_boxes.xyxy[i].tolist()
+            wall_objects.append({
+                'class':class_name,
+                'coords':bboxcorners
             })
-    
-           
+            
+
 
     return wall_objects
 
 
-# # Loop through each result
-#     for result in results:
-#         for mask in result.masks:
-#             wall_objects.append({
-#                 'class':'wall',
-#                 'coords':mask.xy[0]
-#             })
-#     print("--------------------------------------")
-#     print(wall_objects)
-#     print("----------------------------------")
-#     return wall_objects
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
