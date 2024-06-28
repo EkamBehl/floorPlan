@@ -14,7 +14,7 @@ from detectionModel import getBoundingBox
 
 app = FastAPI()
                                                                                                                                                                                                                                                                                                                                                                                  
-origins = ["http://localhost:3000","http://localhost:3000/scene/new"]
+origins = [BASE_URL,"http://localhost:3000/scene/new"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
