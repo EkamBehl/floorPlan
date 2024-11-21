@@ -14,7 +14,7 @@ from detectionModel import getBoundingBox
 
 app = FastAPI()
                                                                                                                                                                                                                                                                                                                                                                                  
-origins = ["https://floor-plan-detection-api.vercel.app/","https://floor-plan-detection-l6c2uae0g-ekambehls-projects.vercel.app/","http://localhost:3000/scene/new","http://192.168.10.83:8000","http://192.168.10.83"]
+origins = ["https://floor-plan-detection-api.vercel.app/","https://floor-plan-detection-l6c2uae0g-ekambehls-projects.vercel.app/","http://localhost:3000/scene/new","http://192.168.10.83:8000","http://192.168.10.83","http:192.168.10.83:3000"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
